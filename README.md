@@ -1,3 +1,4 @@
+
 # Hospital AI Project
 
 Projet d'IA pour la prédiction médicale
@@ -36,3 +37,4 @@ pip install -r requirements.txt
 | `dashboard/assets/hospital_dashboard.pbix` | Ton dashboard Power BI exporté                          |
 | `requirements.txt`                         | Dépendances Python                                      |
 | `README.md`                                | (Optionnel) Explication projet                          |
+
