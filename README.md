@@ -1,40 +1,84 @@
+#🏥 Hospital AI Project
 
-# Hospital AI Project
+Projet d’intelligence artificielle pour la prédiction de la mortalité des patients hospitalisés à partir de données médicales. Il combine un modèle IA (Random Forest) et une interface simple avec Streamlit + un dashboard Power BI intégré.
 
-Projet d'IA pour la prédiction médicale
+#📁 Architecture du projet
+```bash
+hospital-ai-project/
+│
+├── app.py                             # Interface utilisateur (Streamlit)
+├── requirements.txt                  # Dépendances Python
+│
+├── data/
+│   ├── BaseMedicale_Talend.xlsx      # Données brutes Excel
+│   ├── cleaned_data.csv              # Données nettoyées
+│   └── model/
+│       ├── random_forest_model.pkl   # Modèle IA entraîné
+│       └── feature_encoder.pkl       # Encodeur utilisé à l'entraînement
+│
+├── notebooks/
+│   ├―― 1_data_cleaning.ipynb         # Nettoyage des données
+│   ├―― 2_feature_engineering.ipynb  # Feature engineering + encodage
+│   └―― 3_model_training.ipynb        # Entraînement du modèle RandomForest
+│
+├── src/
+│   ├―― model.py                      # Fonction de prédiction IA
+│   ├―― database.py                   # Chargement des données utiles
+│   └―― utils.py                      # Fonctions auxiliaires
+│
+├── dashboard/
+│   ├―― assets/
+│   │   ├―― 1.png                     # Image du dashboard Power BI
+│   │   └―― hospital_dashboard.pbix   # Fichier Power BI complet
+│   └―― powerful_embed.py            # Script pour afficher le dashboard dans Streamlit
+│
+└―― README.md                         # Fichier de documentation
+```
+#🚀 Lancer l'application
 
-## Structure du projet
-
-- `data/` : Contient les données brutes et nettoyées
-- `notebooks/` : Notebooks pour le nettoyage, feature engineering et entraînement
-- `src/` : Code source Python
-- `dashboard/` : Fichiers pour le dashboard Power BI
-
-## Installation
+Assurez-vous d'avoir Python 3.8+ installé.
 
 1. Cloner le dépôt
+```bash
+git clone https://github.com/ton-nom/hospital-ai-project.git
+cd hospital-ai-project
+```
 2. Créer un environnement virtuel
-3. Installer les dépendances :
+
+python -m venv venv
+venv\Scripts\activate     # Windows
+# source venv/bin/activate  # macOS/Linux
+
+3. Installer les dépendances
 ```bash
 pip install -r requirements.txt
+```
+4. Lancer Streamlit
+```bash
+streamlit run app.py
+```
+#🧐 Fonctionnement de l’IA
 
+-L'utilisateur entre les informations médicales dans l'interface (âge, maladie, médicaments, etc.).
+-Ces données sont converties en DataFrame puis encodées via feature_encoder.pkl.
+-Le modèle random_forest_model.pkl fait une prédiction binaire (survie ou décès).
+-Une probabilité (%) de l'issue est aussi retournée.
+-Le tout est affiché dans l’interface via Streamlit.
 
+#📊 Dashboard Power BI intégré
 
+Une version visuelle des KPI hospitaliers est disponible via Power BI, intégrée dans l'app.
 
+#🌐 Exemple d'intégration
+```bash
+from dashboard.powerful_embed import display_dashboard
+display_dashboard()
+```
 
+#📸 Aperçus
 
+Interface IA (Streamlit)
+![Streamlit Interface] (dashboard/assets/1.png)
+![Streamlit Interface] (dashboard/assets/2.png)
 
-| `data/BaseMedicale_Talend.xlsx`            | Données brutes                                          |
-| `notebooks/1_data_cleaning.ipynb`          | Lecture + nettoyage (drop, format, null)                |
-| `notebooks/2_feature_engineering.ipynb`    | Encodage, sélection des features                        |
-| `notebooks/3_model_training.ipynb`         | Entraînement du modèle                                  |
-| `data/model/random_forest_model.pkl`       | Modèle IA entraîné                                      |
-| `src/database.py`                          | Chargement de données pour l’interface                  |
-| `src/model.py`                             | Prediction avec le modèle IA                            |
-| `src/utils.py`                             | Fonctions auxiliaires (ex: encodage, calcul taux, etc.) |
-| `app.py`                                   | Interface finale Streamlit                              |
-| `dashboard/powerful_embed.py`              | Intégration Power BI dans Streamlit                     |
-| `dashboard/assets/hospital_dashboard.pbix` | Ton dashboard Power BI exporté                          |
-| `requirements.txt`                         | Dépendances Python                                      |
-| `README.md`                                | (Optionnel) Explication projet                          |
-
+ 
