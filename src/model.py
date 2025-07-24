@@ -1,42 +1,63 @@
 import pandas as pd
 import joblib
+import numpy as np
 
-# 📦 Charger le modèle et le préprocesseur
+# Load model and preprocessor
 model = joblib.load("data/model/random_forest_model.pkl")
-encoder = joblib.load("data/model/feature_encoder.pkl")
+preprocessor = joblib.load("data/model/feature_encoder.pkl")
 
-def predict_patient(input_data: dict):
+def predict_patient(input_data: dict) -> str:
     """
-    Prend un dictionnaire de données patient en entrée,
-    renvoie une prédiction basée sur le modèle entraîné.
+    Takes patient data as input and returns mortality probability as a percentage.
     """
+    try:
+        # Expected columns
+        expected_columns = ['age', 'sexe', 'type_sanguin', 'maladie', 'id_service', 
+                           'medecin_traitant', 'personnel', 'id_medicament', 
+                           'readmission', 'numIntervention', 'duree_sejour', 'TrancheAge']
 
+        # Copy input data
+        data = input_data.copy()
 
-    # Prétraitement : convertir 'oui'/'non' en 1/0 pour readmission si présent
-    data = input_data.copy()
-    if 'readmission' in data:
-        if isinstance(data['readmission'], str):
-            if data['readmission'].lower() == 'oui':
-                data['readmission'] = 1
-            elif data['readmission'].lower() == 'non':
-                data['readmission'] = 0
+        # Remove unused columns
+        data.pop('nom', None)
 
+        # Add missing columns with default values
+        for col in expected_columns:
+            if col not in data:
+                if col in ['age', 'readmission', 'numIntervention', 'duree_sejour']:
+                    data[col] = 0  # Default for numerical columns
+                else:
+                    data[col] = 'inconnu'  # Default for categorical columns
 
-    # 🔄 Conversion en DataFrame
-    df = pd.DataFrame([data])
+        # Ensure numerical columns are floats
+        numerical_cols = ['age', 'readmission', 'numIntervention', 'duree_sejour']
+        for col in numerical_cols:
+            try:
+                data[col] = float(data[col])
+            except (ValueError, TypeError):
+                return f"Erreur : La colonne {col} doit contenir une valeur numérique valide."
 
-    # Ajouter les colonnes manquantes attendues par l'encodeur avec valeur par défaut
-    for col in encoder.feature_names_in_:
-        if col not in df.columns:
-            df[col] = ""  # ou None selon le type attendu
+        # Calculate TrancheAge
+        bins = [0, 18, 40, 60, 80, 120]
+        labels = ["0-17", "18-39", "40-59", "60-79", "80+"]
+        age = float(data['age'])
+        data['TrancheAge'] = pd.cut([age], bins=bins, labels=labels, right=False)[0]
 
-    # Réordonner les colonnes pour correspondre à l'encodeur
-    df = df[list(encoder.feature_names_in_)]
+        # Create DataFrame
+        df = pd.DataFrame([data])
 
-    # 🔧 Transformation avec le même encodeur qu'à l'entraînement
-    X = encoder.transform(df)
+        # Reorder columns
+        df = df[expected_columns]
 
-    # 🔍 Prédiction
-    prediction = model.predict(X)
+        # Transform data
+        X = preprocessor.transform(df)
 
-    return "Décès probable" if prediction[0] == 1 else "Survie probable"
+        # Predict probability
+        proba = model.predict_proba(X)[0]
+        mortality_proba = proba[1] * 100
+
+        return f"{mortality_proba:.2f}"
+    
+    except Exception as e:
+        return f"Erreur lors de la prédiction : {str(e)}"

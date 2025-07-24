@@ -5,7 +5,7 @@ import os
 
 # Page configuration with custom logo icon - FULL SCREEN
 st.set_page_config(
-    page_title="Medical AI -Mortality Prediction  ",
+    page_title="🏥 Mortality Prediction - Medical AI",
     page_icon="dashboard/assets/c-.png",  # Using your custom logo as page icon
     layout="wide",  # Changed from "centered" to "wide" to use full screen
     initial_sidebar_state="collapsed"
