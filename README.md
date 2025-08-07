@@ -93,7 +93,7 @@ display_dashboard()
 #📸 Aperçus
 
 Interface IA (Streamlit)
-![Streamlit Interface] (dashboard/assets/1.png)
-![Streamlit Interface] (dashboard/assets/2.png)
+![Streamlit Interface](dashboard/assets/1.png)
+![Streamlit Interface](dashboard/assets/2.png)
 
 
